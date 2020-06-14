@@ -13,40 +13,42 @@ def subscription_loop():
 
     while True:
         data = General().info()
-        if data["result"]["bestblockhash"] != bestblockhash:
-            bestblockhash = data["result"]["bestblockhash"]
-            sio.emit("block.update", utils.response({
-                "height": data["result"]["blocks"],
-                "hash": bestblockhash
-            }), room="blocks")
+        if "bestblockhash" in data["result"]:
+            if data["result"]["bestblockhash"] != bestblockhash:
+                bestblockhash = data["result"]["bestblockhash"]
+                sio.emit("block.update", utils.response({
+                    "height": data["result"]["blocks"],
+                    "hash": bestblockhash
+                }), room="blocks")
 
-            updates = Block().inputs(bestblockhash)
+                updates = Block().inputs(bestblockhash)
+                for address in updates:
+                    mempool = list(set(state.mempool) - set(updates[address]))
+                    if address in state.watch_addresses:
+                        sio.emit("address.update", utils.response({
+                            "address": address,
+                            "tx": updates[address],
+                            "height": data["result"]["blocks"],
+                            "hash": bestblockhash
+                        }), room=address)
+
+            data = General().mempool()
+            updates = Transaction().addresses(data["result"]["tx"])
+            temp_mempool = []
             for address in updates:
-                mempool = list(set(state.mempool) - set(updates[address]))
+                updates[address] = list(set(updates[address]) - set(mempool))
+                temp_mempool += updates[address]
                 if address in state.watch_addresses:
-                    sio.emit("address.update", utils.response({
-                        "address": address,
-                        "tx": updates[address],
-                        "height": data["result"]["blocks"],
-                        "hash": bestblockhash
-                    }), room=address)
+                    if len(updates[address]) > 0:
+                        sio.emit("address.update", utils.response({
+                            "address": address,
+                            "tx": updates[address],
+                            "height": None,
+                            "hash": None
+                        }), room=address)
 
-        data = General().mempool()
-        updates = Transaction().addresses(data["result"]["tx"])
-        temp_mempool = []
-        for address in updates:
-            updates[address] = list(set(updates[address]) - set(mempool))
-            temp_mempool += updates[address]
-            if address in state.watch_addresses:
-                if len(updates[address]) > 0:
-                    sio.emit("address.update", utils.response({
-                        "address": address,
-                        "tx": updates[address],
-                        "height": None,
-                        "hash": None
-                    }), room=address)
+            mempool = list(set(mempool + temp_mempool))
 
-        mempool = list(set(mempool + temp_mempool))
         sio.sleep(0.1)
 
 @stats.socket
