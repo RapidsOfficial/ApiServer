@@ -22,12 +22,11 @@ class General():
     @classmethod
     def mempool(cls):
         data = utils.make_request("getmempoolinfo")
+        data["result"]["tx"] = []
 
         if data["error"] is None:
             if data["result"]["size"] > 0:
                 mempool = utils.make_request("getrawmempool")["result"]
                 data["result"]["tx"] = mempool
-            else:
-                data["result"]["tx"] = []
 
         return data

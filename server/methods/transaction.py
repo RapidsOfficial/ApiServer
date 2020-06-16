@@ -47,6 +47,7 @@ class Transaction():
         updates = {}
         for tx in tx_data:
             transaction = Transaction().info(tx)
+
             vin = transaction["result"]["vin"]
             vout = transaction["result"]["vout"]
 
