@@ -12,9 +12,15 @@ def subscription_loop():
     bestblockhash = None
 
     while True:
+        print("Subscription loop")
+        print(f"Watching for {len(state.watch_addresses)} addresses")
+        print(f"Watching for {len(state.watch_addresses)} addresses")
+
         data = General().info()
         if "bestblockhash" in data["result"]:
             if data["result"]["bestblockhash"] != bestblockhash:
+                print("New block")
+
                 bestblockhash = data["result"]["bestblockhash"]
                 sio.emit("block.update", utils.response({
                     "height": data["result"]["blocks"],
@@ -25,6 +31,8 @@ def subscription_loop():
                 for address in updates:
                     mempool = list(set(state.mempool) - set(updates[address]))
                     if address in state.watch_addresses:
+                        print(f"Sending update to address: {address}")
+
                         sio.emit("address.update", utils.response({
                             "address": address,
                             "tx": updates[address],
@@ -40,6 +48,8 @@ def subscription_loop():
                 temp_mempool += updates[address]
                 if address in state.watch_addresses:
                     if len(updates[address]) > 0:
+                        print(f"Sending mempool update to address: {address}")
+
                         sio.emit("address.update", utils.response({
                             "address": address,
                             "tx": updates[address],
@@ -49,7 +59,8 @@ def subscription_loop():
 
             mempool = list(set(mempool + temp_mempool))
 
-        sio.sleep(0.1)
+        print("Subscription loop is done, waiting delay")
+        sio.sleep(0.5)
 
 @stats.socket
 def Connect():
