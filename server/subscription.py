@@ -73,11 +73,12 @@ def Disconnect():
     state.connections -= 1
     if request.sid in state.subscribers:
         for address in state.subscribers[request.sid]:
-            if request.sid in state.watch_addresses[address]:
-                state.watch_addresses[address].remove(request.sid)
-                flask_socketio.leave_room(address, request.sid)
-                if len(state.watch_addresses[address]) == 0:
-                    state.watch_addresses.pop(address)
+            if address in state.watch_addresses:
+                if request.sid in state.watch_addresses[address]:
+                    state.watch_addresses[address].remove(request.sid)
+                    flask_socketio.leave_room(address, request.sid)
+                    if len(state.watch_addresses[address]) == 0:
+                        state.watch_addresses.pop(address)
 
         state.subscribers.pop(request.sid)
 
