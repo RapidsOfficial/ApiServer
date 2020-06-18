@@ -60,7 +60,7 @@ def subscription_loop():
             mempool = list(set(mempool + temp_mempool))
 
         # print("Subscription loop is done, waiting delay")
-        sio.sleep(2)
+        # sio.sleep(2)
 
 @stats.socket
 def Connect():
