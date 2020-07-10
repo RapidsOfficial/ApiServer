@@ -10,28 +10,23 @@ import flask_socketio
 
 def subscription_loop():
     bestblockhash = None
+    mempool = []
 
     while True:
-        # print("Subscription loop")
-        # print(f"Watching for {len(state.watch_addresses)} addresses")
-        # print(f"Watching for {len(state.watch_addresses)} addresses")
-
         data = General().info()
-        if "bestblockhash" in data["result"]:
-            if data["result"]["bestblockhash"] != bestblockhash:
-                # print("New block")
+        if "result" in data:
+            if "bestblockhash" in data["result"]:
+                if data["result"]["bestblockhash"] != bestblockhash:
+                    bestblockhash = data["result"]["bestblockhash"]
 
-                bestblockhash = data["result"]["bestblockhash"]
-                sio.emit("block.update", utils.response({
-                    "height": data["result"]["blocks"],
-                    "hash": bestblockhash
-                }), room="blocks")
+                    sio.emit("block.update", utils.response({
+                        "height": data["result"]["blocks"],
+                        "hash": bestblockhash
+                    }), room="blocks")
 
-                updates = Block().inputs(bestblockhash)
-                for address in updates:
-                    mempool = list(set(state.mempool) - set(updates[address]))
-                    if address in state.watch_addresses:
-                        # print(f"Sending update to address: {address}")
+                    updates = Block().inputs(bestblockhash)
+                    for address in updates:
+                        mempool = list(set(mempool) - set(updates[address]))
 
                         sio.emit("address.update", utils.response({
                             "address": address,
@@ -40,15 +35,14 @@ def subscription_loop():
                             "hash": bestblockhash
                         }), room=address)
 
-            data = General().mempool()
-            updates = Transaction().addresses(data["result"]["tx"])
-            temp_mempool = []
-            for address in updates:
-                updates[address] = list(set(updates[address]) - set(mempool))
-                temp_mempool += updates[address]
-                if address in state.watch_addresses:
-                    if len(updates[address]) > 0:
-                        # print(f"Sending mempool update to address: {address}")
+                data = General().mempool()
+                temp_mempool = []
+
+                if not data["error"]:
+                    updates = Transaction().addresses(data["result"]["tx"])
+                    for address in updates:
+                        updates[address] = list(set(updates[address]) - set(mempool))
+                        temp_mempool += updates[address]
 
                         sio.emit("address.update", utils.response({
                             "address": address,
@@ -57,10 +51,9 @@ def subscription_loop():
                             "hash": None
                         }), room=address)
 
-            mempool = list(set(mempool + temp_mempool))
+                mempool = list(set(mempool + temp_mempool))
 
-        # print("Subscription loop is done, waiting delay")
-        # sio.sleep(2)
+        sio.sleep(0)
 
 @stats.socket
 def Connect():
