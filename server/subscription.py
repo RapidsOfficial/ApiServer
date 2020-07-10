@@ -44,12 +44,13 @@ def subscription_loop():
                         updates[address] = list(set(updates[address]) - set(mempool))
                         temp_mempool += updates[address]
 
-                        sio.emit("address.update", utils.response({
-                            "address": address,
-                            "tx": updates[address],
-                            "height": None,
-                            "hash": None
-                        }), room=address)
+                        if len(updates[address]) > 0:
+                            sio.emit("address.update", utils.response({
+                                "address": address,
+                                "tx": updates[address],
+                                "height": None,
+                                "hash": None
+                            }), room=address)
 
                 mempool = list(set(mempool + temp_mempool))
 
