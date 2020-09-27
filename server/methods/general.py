@@ -35,4 +35,5 @@ class General():
     @classmethod
     def price(cls):
         link = "https://api.coingecko.com/api/v3/simple/price?ids=rapids&vs_currencies=usd,btc,gbp,eur"
-        return requests.get(link).json()
+        data = requests.get(link).json()
+        return utils.response(data["rapids"])
