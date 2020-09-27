@@ -14,6 +14,10 @@ def EstimateFee():
     return General().fee()
 
 @stats.socket
+def GetPrice():
+    return General().price()
+
+@stats.socket
 def AddressUnspent(address: str, amount=0):
     return Address().unspent(address, amount)
 
@@ -63,6 +67,7 @@ def init(sio):
 
     sio.on_event("general.info", GetInfo)
     sio.on_event("general.fee", EstimateFee)
+    sio.on_event("general.price", GetPrice)
     sio.on_event("address.unspent", AddressUnspent)
     sio.on_event("address.balance", AddressBalance)
     sio.on_event("address.history", AddressHistory)

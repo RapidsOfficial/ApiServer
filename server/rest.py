@@ -3,7 +3,6 @@ from flask_restful import Resource, reqparse
 from server.methods.general import General
 from server.methods.address import Address
 from server.methods.block import Block
-from flask import Response
 from server import stats
 from server import utils
 
@@ -11,6 +10,11 @@ class GetInfo(Resource):
     @stats.rest
     def get(self):
         return General().info()
+
+class GetPrice(Resource):
+    @stats.rest
+    def get(self):
+        return General().price()
 
 class BlockByHeight(Resource):
     @stats.rest
@@ -124,6 +128,7 @@ class Broadcast(Resource):
 
 def init(api):
     api.add_resource(GetInfo, "/info")
+    api.add_resource(GetPrice, "/price")
     api.add_resource(BlockByHeight, "/height/<int:height>")
     api.add_resource(HashByHeight, "/hash/<int:height>")
     api.add_resource(BlockByHash, "/block/<string:bhash>")

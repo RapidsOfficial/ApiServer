@@ -1,4 +1,5 @@
 from server import utils
+import requests
 
 class General():
     @classmethod
@@ -30,3 +31,8 @@ class General():
                 data["result"]["tx"] = mempool
 
         return data
+
+    @classmethod
+    def price(cls):
+        link = "https://api.coingecko.com/api/v3/simple/price?ids=rapids&vs_currencies=usd,btc,gbp,eur"
+        return requests.get(link).json()
