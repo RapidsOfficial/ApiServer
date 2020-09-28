@@ -36,4 +36,9 @@ class General():
     def price(cls):
         link = "https://api.coingecko.com/api/v3/simple/price?ids=rapids&vs_currencies=usd,btc,gbp,eur"
         data = requests.get(link).json()
-        return utils.response(data["rapids"])
+        return utils.response({
+            "usd": str(data["rapids"]["usd"]),
+            "btc": str(data["rapids"]["btc"]),
+            "gbp": str(data["rapids"]["gbp"]),
+            "eur": str(data["rapids"]["eur"])
+        })
