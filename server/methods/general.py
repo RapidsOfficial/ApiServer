@@ -43,7 +43,7 @@ class General():
             return utils.dead_response("Currency not found")
 
         slug = slugs[currency]
-        link = "https://api.coingecko.com/api/v3/simple/price?ids={slug}&vs_currencies=usd,btc,gbp,eur"
+        link = f"https://api.coingecko.com/api/v3/simple/price?ids={slug}&vs_currencies=usd,btc,gbp,eur"
         data = requests.get(link).json()
 
         return utils.response({
