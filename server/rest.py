@@ -14,7 +14,11 @@ class GetInfo(Resource):
 class GetPrice(Resource):
     @stats.rest
     def get(self):
-        return General().price()
+        parser = reqparse.RequestParser()
+        parser.add_argument("currency", type=str, default="RPD")
+        args = parser.parse_args()
+
+        return General().price(args["currency"])
 
 class BlockByHeight(Resource):
     @stats.rest

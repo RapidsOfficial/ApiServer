@@ -14,8 +14,8 @@ def EstimateFee():
     return General().fee()
 
 @stats.socket
-def GetPrice():
-    return General().price()
+def GetPrice(currency="RPD"):
+    return General().price(currency)
 
 @stats.socket
 def AddressUnspent(address: str, amount=0):
