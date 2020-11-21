@@ -33,9 +33,16 @@ class General():
         return data
 
     @classmethod
-    def price(cls):
-        link = "https://api.coingecko.com/api/v3/simple/price?ids=rapids&vs_currencies=usd,btc,gbp,eur"
-        data = requests.get(link).json()
+    def price(cls, currency="RPD"):
+        links = {
+            "RPD": "https://api.coingecko.com/api/v3/simple/price?ids=rapids&vs_currencies=usd,btc,gbp,eur",
+            "DAPS": "https://api.coingecko.com/api/v3/simple/price?ids=daps-token&vs_currencies=usd,btc,gbp,eur"
+        }
+
+        if currency not in links:
+            return utils.dead_response("Currency not found")
+
+        data = requests.get(links[currency]).json()
         return utils.response({
             "usd": str(data["rapids"]["usd"]),
             "btc": str(data["rapids"]["btc"]),
