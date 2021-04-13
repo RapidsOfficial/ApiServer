@@ -36,6 +36,7 @@ class General():
     def price(cls, currency="RPD"):
         slugs = {
             "RPD": "rapids",
+            "PRCY": "prcy-coin",
             "DAPS": "daps-token"
         }
 
