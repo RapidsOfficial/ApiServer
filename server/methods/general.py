@@ -16,7 +16,7 @@ class General():
     @classmethod
     def fee(cls):
         return utils.response({
-            "feerate": utils.satoshis(0.00001),
+            "feerate": utils.satoshis(0.001),
             "blocks": 6
         })
 
