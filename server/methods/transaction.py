@@ -1,7 +1,6 @@
 from server import utils
 from server import cache
 import config
-import json
 
 class Transaction():
     @classmethod
@@ -31,6 +30,8 @@ class Transaction():
                         if vin_data["error"] is None:
                             data["result"]["vin"][index]["scriptPubKey"] = vin_data["result"]["vout"][vin["vout"]]["scriptPubKey"]
                             data["result"]["vin"][index]["value"] = utils.satoshis(vin_data["result"]["vout"][vin["vout"]]["value"])
+                            data["result"]["vin"][index]["height"] = vin_data["result"]["height"]
+                            data["result"]["vin"][index]["time"] = vin_data["result"]["time"]
 
             amount = 0
             for index, vout in enumerate(data["result"]["vout"]):
