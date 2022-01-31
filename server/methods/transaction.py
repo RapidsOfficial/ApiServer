@@ -30,7 +30,6 @@ class Transaction():
                         if vin_data["error"] is None:
                             data["result"]["vin"][index]["scriptPubKey"] = vin_data["result"]["vout"][vin["vout"]]["scriptPubKey"]
                             data["result"]["vin"][index]["value"] = utils.satoshis(vin_data["result"]["vout"][vin["vout"]]["value"])
-                            data["result"]["vin"][index]["height"] = vin_data["result"]["height"]
                             data["result"]["vin"][index]["time"] = vin_data["result"]["time"]
 
             amount = 0
@@ -39,6 +38,13 @@ class Transaction():
                 amount += vout["value"]
 
             data["result"]["amount"] = amount
+
+            transfer = utils.make_request("gettokentransaction", [thash])
+
+            if not transfer["error"]:
+                if transfer["result"]["valid"]:
+                    transfer["result"].pop("ismine")
+                    data["result"]["transfer"] = transfer["result"]
 
         return data
 

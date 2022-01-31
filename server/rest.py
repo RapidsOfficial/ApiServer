@@ -79,6 +79,11 @@ class AddressBalance(Resource):
     def get(self, address):
         return Address().balance(address)
 
+class AddressBalanceTokens(Resource):
+    @stats.rest
+    def get(self, address):
+        return Address().tokens(address)
+
 class AddressHistory(Resource):
     @stats.rest
     def get(self, address):
@@ -121,6 +126,11 @@ class EstimateFee(Resource):
     def get(self):
         return General().fee()
 
+class TokenInfo(Resource):
+    @stats.rest
+    def get(self, name):
+        return General().token(name)
+
 class Broadcast(Resource):
     @stats.rest
     def post(self):
@@ -139,11 +149,13 @@ def init(api):
     api.add_resource(BlockHeader, "/header/<string:bhash>")
     api.add_resource(BlocksByRange, "/range/<int:height>")
     api.add_resource(AddressBalance, "/balance/<string:address>")
+    api.add_resource(AddressBalanceTokens, "/tokens/<string:address>")
     api.add_resource(AddressMempool, "/mempool/<string:address>")
     api.add_resource(AddressUnspent, "/unspent/<string:address>")
     api.add_resource(AddressHistory, "/history/<string:address>")
     api.add_resource(TransactionInfo, "/transaction/<string:thash>")
     api.add_resource(DecodeRawTx, "/decode/<string:raw>")
+    api.add_resource(TokenInfo, "/token/<string:name>")
     api.add_resource(MempoolInfo, "/mempool")
     api.add_resource(EstimateFee, "/fee")
     api.add_resource(Broadcast, "/broadcast")

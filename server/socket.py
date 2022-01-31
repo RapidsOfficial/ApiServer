@@ -14,6 +14,10 @@ def EstimateFee():
     return General().fee()
 
 @stats.socket
+def TokenInfo(name: str):
+    return General().token(name)
+
+@stats.socket
 def GetPrice(currency="RPD"):
     return General().price(currency)
 
@@ -24,6 +28,10 @@ def AddressUnspent(address: str, amount=0):
 @stats.socket
 def AddressBalance(address: str):
     return Address().balance(address)
+
+@stats.socket
+def AddressBalanceTokens(address: str):
+    return Address().tokens(address)
 
 @stats.socket
 def AddressHistory(address: str):
@@ -68,8 +76,10 @@ def init(sio):
     sio.on_event("general.info", GetInfo)
     sio.on_event("general.fee", EstimateFee)
     sio.on_event("general.price", GetPrice)
+    sio.on_event("general.token", TokenInfo)
     sio.on_event("address.unspent", AddressUnspent)
     sio.on_event("address.balance", AddressBalance)
+    sio.on_event("address.tokens", AddressBalanceTokens)
     sio.on_event("address.history", AddressHistory)
     sio.on_event("address.mempool", AddressMempool)
     sio.on_event("address.mempool.raw", AddressMempoolRaw)

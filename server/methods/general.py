@@ -33,6 +33,11 @@ class General():
         return data
 
     @classmethod
+    def token(cls, name):
+        data = utils.make_request("gettoken", [name])
+        return data
+
+    @classmethod
     def price(cls, currency="RPD"):
         slugs = {
             "RPD": "rapids",
