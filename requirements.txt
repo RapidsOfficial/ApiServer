@@ -1,7 +1,7 @@
 aniso8601==8.0.0
 argh==0.26.2
 asyncio==3.4.3
-certifi==2019.9.11
+certifi==2022.12.7
 chardet==3.0.4
 Click==7.0
 Deprecated==1.2.13
